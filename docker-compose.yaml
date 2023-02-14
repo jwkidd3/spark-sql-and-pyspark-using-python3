@@ -1,0 +1,28 @@
+services:
+  itvdelab:
+    image: spark/itvdelab
+    hostname: itvdelab
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./spark-material:/home/spark/spark-material"
+      - "./data:/data"
+    environment:
+      SHELL: /bin/bash
+    networks:
+      - itvdelabnw
+    depends_on:
+      - "cluster_util_db"
+  cluster_util_db:
+    image: postgres:13
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./cluster_util_db_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - itvdelabnw
+    environment:
+      POSTGRES_PASSWORD: spark
+networks:
+  itvdelabnw:
+    name: itvdelabnw
